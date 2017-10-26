@@ -1,0 +1,22 @@
+language: python
+
+python:
+  - "3.5"
+
+install:
+    - pip install -r requirements.txt
+    # - pip install coveralls
+    - pip install codecov
+
+script: make test
+
+after_success:
+    - codecov --token 3e049fa4-4e8d-4368-b805-bb3f40603420
+    # - coveralls
+
+branches:
+  only:
+  - master
+
+notifications:
+  email: false
