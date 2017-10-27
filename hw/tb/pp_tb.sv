@@ -1,14 +1,14 @@
 `timescale 1ns/1ns
-`include "ffpp_ifc.sv"
-`include "ffpp_def.svh"
-`include "ffpp_trans.sv"
-`include "ffpp_env.sv"
+`include "pp_ifc.sv"
+`include "pp_def.svh"
+`include "pp_trans.sv"
+`include "pp_env.sv"
 
 /* the testbench */
 `ifdef CC_MODELSIM
-module ffpp_tb(ffpp_ifc.bench ds);
+module pp_tb(pp_ifc.bench ds);
 `else
-program ffpp_tb(ffpp_ifc.bench ds);
+program pp_tb(pp_ifc.bench ds);
 `endif
 
     transaction t;

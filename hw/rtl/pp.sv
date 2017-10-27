@@ -2,7 +2,7 @@
 `include "pp_constants.svh"
 
 module pp #(
-localparam NOOP   =4'b0000,
+localparam NOOP   =4'b0000
 )
 (
     pp_ifc.dut d
