@@ -7,4 +7,4 @@ Accelerating Pandas on PYNQ
 [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/pynqpandas/Lobby)
 [![Waffle.io](https://badge.waffle.io/timkpaine/pynqpandas.png?label=ready&title=Ready)](https://waffle.io/timkpaine/pynqpandas?utm_source=badge)
 [![BCH compliance](https://bettercodehub.com/edge/badge/timkpaine/pynqpandas?branch=master)](https://bettercodehub.com/)
-[![Beerpay](https://beerpay.io/timkpaine/pynqpandas/badge.svg?style=beer-square)](https://beerpay.io/timkpaine/pynqpandas)  [![Beerpay](https://beerpay.io/timkpaine/pynqpandas/make-wish.svg?style=flat-square)](https://beerpay.io/timkpaine/pynqpandas?focus=wish)
+[![Beerpay](https://beerpay.io/timkpaine/pynqpandas/badge.svg?style=flat)](https://beerpay.io/timkpaine/pynqpandas)
