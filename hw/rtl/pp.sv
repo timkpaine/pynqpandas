@@ -9,10 +9,8 @@ localparam NOOP   =4'b0000
 );
 
   logic test;
-  logic signed [NUM_SIZE-1: 0] fxin1;
-  logic signed [NUM_SIZE-1: 0] fxin2;
-  assign fxin1 = d.in1;
-  assign fxin2 = d.in2;
+//  logic signed [NUM_SIZE-1: 0] fxin1;
+//  assign fxin1 = d.in1;
   
   always_ff @(posedge d.clk) begin
     if(d.reset) begin
@@ -29,3 +27,4 @@ localparam NOOP   =4'b0000
   end
 
 endmodule
+

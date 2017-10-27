@@ -8,10 +8,6 @@ class transaction;
     int fx2;
     int fxout;
 
-    int fp1;
-    int fp2;
-    int fpout;
-
     bit valid;
 
     /* testing fixed point operations */
@@ -20,12 +16,7 @@ class transaction;
         fx1 = in1;
         fx2 = in2;
     endfunction :drive_fxop
-
-    function void drive_fpop( int op, real in1, real in2 );
-        cmd = op;
-        fp1 = in1;
-        fp2 = in2;
-    endfunction :drive_fpop
+ 
     
     /* drive reset on input */
     function void drive_reset();
@@ -43,55 +34,14 @@ class transaction;
                 // do nothing
                 valid = 0;
             end
-            FX_ADD: begin
-                fxout = fx1 + fx2;
-                valid = 1;
-            end
-            FX_SUB: begin
-                fxout = fx1 - fx2;
-                valid = 1;
-            end
-            FX_MUL: begin
-                fxout = fx1 * fx2;
-                valid = 1;
-            end
-            FX_DIV: begin
-                fxout = fx1 / fx2;
-                valid = 1;
-            end
         endcase
       return ( fxout == out ) && ( val == valid );
     endfunction : check_fx_op
 
-    function bit check_fp_op( int out, bit val ); 
-        case( cmd )
-            NOOP: begin
-                // do nothing
-                valid = 0;
-            end
-            FP_ADD: begin
-                fpout = -1;
-                valid = 1;
-            end
-            FP_SUB: begin
-                fpout = -1;
-                valid = 1;
-            end
-            FP_MUL: begin
-                fpout = -1;
-                valid = 1;
-            end
-            FP_DIV: begin
-                fpout = -1;
-                valid = 1;
-            end
-        endcase
-      return ( fpout == out ) && ( val == valid );
-    endfunction : check_fp_op
- 
     function bit check_noop( int out, bit val );
         return ( ( out == fxout ) | ( out == fpout ) ) && ( val == 0 );
     endfunction : check_noop
     
 endclass
+
 

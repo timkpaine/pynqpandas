@@ -7,14 +7,15 @@ interface  pp_ifc
     input bit clk
 );
 
+logic [2**CMD_SIZE_LOG2-1:0] cmd;
 logic reset;
 logic enable;
 logic valid;
 
 
 clocking cb @(posedge clk);
-    output reset, enable, cmd, in1, in2;
-    input fpout, fxout, valid;
+    output reset, enable, cmd;
+    input valid;
 endclocking
 
 modport bench(
@@ -22,9 +23,8 @@ modport bench(
 );
 
 modport dut(
-    input clk, reset, enable,
-    input in1, in2, cmd,
-    output fpout, fxout, valid
+    input clk, reset, enable, cmd,
+    output valid
 );
 endinterface
 
