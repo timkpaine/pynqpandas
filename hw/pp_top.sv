@@ -1,8 +1,7 @@
-// Code your design here
 `timescale 1ns/1ns
 `include "pp.sv"
 
-module pynqpandas_top;
+module pp_top;
 
    // clock generator
    bit clk = 1;
@@ -16,6 +15,3 @@ module pynqpandas_top;
     pp_tb bench (IFC.bench);
 
 endmodule
-
-
-

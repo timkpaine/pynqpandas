@@ -19,8 +19,8 @@ class testing_env;
     int reset_thresh;
     bit reset;
 
-    int inop_thresh;
-    int inop;
+    int op_thresh;
+    int op;
 
     int iter;
 
@@ -43,7 +43,7 @@ class testing_env;
             end else if( "RESET_PROB" == param ) begin
                 reset_thresh = value;
             end else if( "OP_PROB" == param ) begin
-                inop_thresh = value;
+                op_thresh = value;
             end else begin
               $display( "Invalid parameter - %s", param );
                 $exit();
@@ -55,16 +55,17 @@ class testing_env;
         return( ( rn % 1000 ) < reset_thresh );
     endfunction
 
-    function int get_fxop();
+    function int get_op();
         int val = ( rn % 1000 );
-        if ( val  < inop_thresh ) begin
+        if ( val  < op_thresh ) begin
             // choose op
-          return NOOP;
+            if ( val <  ( op_thresh / 4 ) ) begin
+                return ADD;
+            end else begin
+                return NOOP;
+            end
         end else begin
             return 0;
         end
     endfunction
-
 endclass
-
-

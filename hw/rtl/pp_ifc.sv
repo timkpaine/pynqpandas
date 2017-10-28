@@ -2,22 +2,20 @@
 `include "pp_constants.svh"
 
 /* no iverilog support for modports or clocking */
-`ifdef CC_modelsim
 interface  pp_ifc
-`endif
 (
     input bit clk
 );
 
-logic [2**CMD_SIZE_LOG2-1:0] cmd;
 logic reset;
-logic enable;
-logic valid;
-    
+logic [2**CMD_SIZE_LOG2-1:0] cmd;
+logic [NUM_SIZE-1:0] in1, in2;
+logic out;
+logic [NUM_SIZE-1:0] out1;
 
 clocking cb @(posedge clk);
-    output reset, enable, cmd, in1, in2;
-    input valid;
+    output reset, cmd, in1, in2;
+    input out, out1;
 endclocking
 
 modport bench(
@@ -25,9 +23,8 @@ modport bench(
 );
 
 modport dut(
-    input clk, reset, enable, cmd, in1, in2,
-    output valid
+    input clk, reset,
+    input in1, in2, cmd,
+    output out, out1
 );
 endinterface
-
-

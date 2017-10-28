@@ -13,17 +13,17 @@ program pp_tb(pp_ifc.bench ds);
 
     transaction t;
     testing_env v;
-
+    /* reset vars */
     bit reset;
-
+    /* op vars */
     int op;
     int in1;
     int in2;
-
+ 
     initial begin
         t = new();
         v = new();
-        v.read_config("./tb/config.txt");
+        v.read_config("./config.txt");
      
         repeat(10) begin
             // initial reset
@@ -32,23 +32,25 @@ program pp_tb(pp_ifc.bench ds);
             ds.cb.in2 <= 'b0;
             ds.cb.cmd <= 'b0;
             @(ds.cb);
-        end
+        end // end repeat
 
         ds.cb.reset <= 1'b0;
-        repeat(2) @(ds.cb);
+        repeat(2) @(ds.cb); // flush
+
 
         repeat(v.iter) begin
             f_randomize();
             run_reset();
-            run_fxop();
+            run_op();
         end
         $finish;
-    end
+    end // initial begin
 
 
     /* RANDOMIZE
         based on system, randomize vars 
     */
+
     task f_randomize();
 `ifdef CC_MODELSIM
         v.modelsim_randomize();
@@ -58,9 +60,11 @@ program pp_tb(pp_ifc.bench ds);
     endtask
 
 
+    /* function for running reset tests */
     task run_reset();
         reset = v.get_reset();
         
+        // drive inputs for next cycle
         if(reset) begin
             ds.cb.reset <= 1'b1;
             $display("%t : %s", $realtime, "Driving Reset");
@@ -72,16 +76,62 @@ program pp_tb(pp_ifc.bench ds);
          ds.cb.reset <= 1'b0;
         @(ds.cb);
 
+        //golden results
         if( reset ) begin
-            $display( "%t : %s", $realtime, t.check_reset(ds.cb.valid ) ? "Pass reset": "Fail reset" );
-            $display( "%t : %s", $realtime, t.check_reset(ds.cb.valid ) ? "Pass reset": "Fail reset" );
+            $display( "%t : %s", $realtime, t.check_reset( ds.cb.out ) ? "Pass-reset":"Fail-reset" );
             t.drive_reset();
-        end 
+        end else begin
+            $display( "%t : %s", $realtime, t.check_not_reset( ds.cb.out ) ? "Pass-not-reset" : "Fail-not-reset" );
+        end
+        // t.clock_tic();
     endtask : run_reset
 
-`ifdef CC_MODELSIM
-endmodule
-`else
-endprogram
-`endif
+    task run_op();
+        op = v.get_op();
+        // drive inputs for next cycle
+        if( op > 0 ) begin
+            in1 = v.in1;
+            in2 = v.in2;
+            ds.cb.cmd <= op;
+            ds.cb.in1 <= in1;
+            ds.cb.in2 <= in2;
+            case( op )
+                ADD: begin
+                  $display("%t : %s + %d %d ", $realtime, "Driving op  ", in1, in2 );
+                end
+                NOOP: begin
+                  $display("%t : %s", $realtime, "Driving noop ");
+                end
+            endcase
+          t.drive_op( op, in1, in2 );
 
+        end else begin
+            ds.cb.cmd <= NOOP;
+            ds.cb.in1 <= 'b0;
+            ds.cb.in2 <= 'b0;
+        end
+
+        @(ds.cb);
+        ds.cb.cmd <= NOOP;
+        @(ds.cb);
+      
+        //golden results
+        if( op ) begin
+            case( op )
+                ADD: begin
+                    $display( "%t : %s %d %d", $realtime, t.check_op( ds.cb.out1 ) ? "Pass-op +" : "Fail-op +", t.out, ds.cb.out1 );
+                end
+            endcase
+        end else begin
+          $display( "%t : %s %d %d", $realtime, t.check_noop( ds.cb.out1 ) ? "Pass-noop" : "Fail-noop", t.out, ds.cb.out1 );
+        end
+        // t.clock_tic();
+    endtask : run_op
+
+
+
+`ifdef CC_MODELSIM
+endmodule // pp_tb
+`else
+endprogram //pp_tb
+`endif
