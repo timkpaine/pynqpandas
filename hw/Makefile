@@ -9,25 +9,26 @@ TARGET_TB := pp_tb
 
 all: $(TARGET)
 
-# WAVE_VIEWER := gtkwave
+WAVE_VIEWER := gtkwave
 WAVE_VIEWER := /Applications/Scansion.app/Contents/MacOS/Scansion
 
-# CC := vcs
-# CC := verilator
-CC := iverilog
+VCS := vcs
+VRL := verilator
+IVL := iverilog
+COMPILER=verilator
 
 .SUFFIXES: .hpp .cpp .cc .h .c .o .opp .so
 
 # vcs flags
-# CC_FLAGS :=
-# CC_FLAGS += -sv --debug --trace
+VCS_FLAGS :=
+VCS_FLAGS += -sv --debug --trace
 
 # verilator flags
-# CC_FLAGS :=  -cc
+VRL_FLAGS :=  -cc
 
 # iverilog flags
-CC_FLAGS :=
-CC_FLAGS += -g2012 -D CC_IVERILOG
+IVL_FLAGS :=
+IVL_FLAGS += -g2012 -D CC_IVERILOG
 
 # LIBDIR = -L.
 INCDIR = -I./rtl -I./tb
@@ -40,9 +41,19 @@ ALL_SRC:=
 ALL_SRC+=pp_top.sv
 
 
+vcs: $(ALL_SRC) ## Make target - VCS
+	$(VCS) $(VCS_FLAGS) 
+
+iverilog: $(ALL_SRC) ## Make target - IVerilog
+	$(IVL) $(IVL_FLAGS) -o $(TARGET) $(INCDIR) $(ALL_SRC) 
+
+verilator: $(ALL_SRC) ## Make Target - Verilator 
+	$(VRL) $(VRL_FLAGS) -o $(TARGET) $(INCDIR) $(ALL_SRC) 
+
 
 $(TARGET): $(ALL_SRC) ## Make target
 	$(CC) $(CC_FLAGS) -o $(TARGET) $(INCDIR) $(ALL_SRC) 
+
 
 modelsim: $(ALL_SRC) ## Build and simulate design on Altera Modelsim
 	vlib rtl_work
@@ -75,4 +86,4 @@ help:
 print-%:
 	@echo '$*=$($*)'
 
-.PHONY: clean wave modelsim
+.PHONY: clean wave modelsim iverilog vcs verilator

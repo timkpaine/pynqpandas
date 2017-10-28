@@ -5,22 +5,22 @@
  */
 class testing_env;
     rand int unsigned rn;
-    rand int fx1;
-    rand int fx2;
+    rand int in1;
+    rand int in2;
     
 `ifdef CC_MODELSIM
     function void modelsim_randomize();
         rn =  $random();
-        fx1 = $random();
-        fx2 = $random();
+        in1 = $random();
+        in2 = $random();
     endfunction : modelsim_randomize
 `endif
 
     int reset_thresh;
     bit reset;
 
-    int fxop_thresh;
-    int fxop;
+    int inop_thresh;
+    int inop;
 
     int iter;
 
@@ -42,8 +42,8 @@ class testing_env;
                 iter = value;
             end else if( "RESET_PROB" == param ) begin
                 reset_thresh = value;
-            end else if( "FXOP_PROB" == param ) begin
-                fxop_thresh = value;
+            end else if( "OP_PROB" == param ) begin
+                inop_thresh = value;
             end else begin
               $display( "Invalid parameter - %s", param );
                 $exit();
@@ -57,7 +57,7 @@ class testing_env;
 
     function int get_fxop();
         int val = ( rn % 1000 );
-        if ( val  < fxop_thresh ) begin
+        if ( val  < inop_thresh ) begin
             // choose op
           return NOOP;
         end else begin
