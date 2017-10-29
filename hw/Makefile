@@ -55,6 +55,8 @@ $(TARGET): $(ALL_SRC) ## Make target
 	$(CC) $(CC_FLAGS) -o $(TARGET) $(INCDIR) $(ALL_SRC) 
 
 
+vivado: $(ALL_SRC) ## Build and simulate design on Xilinx Vivado
+
 modelsim: $(ALL_SRC) ## Build and simulate design on Altera Modelsim
 	vlib rtl_work
 	vmap work rtl_work
@@ -72,8 +74,9 @@ modelsim: $(ALL_SRC) ## Build and simulate design on Altera Modelsim
 clean: ## Clean build files 
 	rm -f *.o $(TARGET) *.vcd modelsim.ini
 	rm -rf work rtl_work *.log transcript vsim.wlf
-	$(MAKE) clean -C rtl
+	rm -rf xsim.dir xvlog.pb
 	rm -rf obj_dir
+
 
 wave: ## View waveform
 	$(WAVE_VIEWER) $(TARGET).vcd

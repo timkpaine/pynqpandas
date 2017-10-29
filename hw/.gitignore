@@ -1,0 +1,6 @@
+modelsim.ini
+pp_top.vcd
+rtl_work/
+transcript
+xsim.dir/
+xvlog.pb
