@@ -87,3 +87,4 @@
 pynqpandas.cache
 pynqpandas.runs
 pynqpandas.ip_user_files
+*.backup.jou

@@ -2,13 +2,11 @@
 # Vivado v2017.3 (64-bit)
 # SW Build 2018833 on Wed Oct  4 19:58:07 MDT 2017
 # IP Build 2016188 on Wed Oct  4 21:52:56 MDT 2017
-# Start of session at: Mon Oct 30 11:23:26 2017
-# Process ID: 4824
-# Current directory: /home/vagrant/pynqpandas/hw/v
-# Command line: vivado
-# Log file: /home/vagrant/pynqpandas/hw/v/vivado.log
-# Journal file: /home/vagrant/pynqpandas/hw/v/vivado.jou
+# Start of session at: Mon Oct 30 11:40:17 2017
+# Process ID: 6309
+# Current directory: /home/vagrant/pynqpandas/hw
+# Command line: vivado -mode batch -source v/synth.tcl
+# Log file: /home/vagrant/pynqpandas/hw/vivado.log
+# Journal file: /home/vagrant/pynqpandas/hw/vivado.jou
 #-----------------------------------------------------------
-start_gui
-open_project /home/vagrant/pynqpandas/hw/v/pynqpandas.xpr
-update_compile_order -fileset sources_1
+source v/synth.tcl

@@ -56,6 +56,7 @@ $(TARGET): $(ALL_SRC) ## Make target
 
 
 vivado: $(ALL_SRC) ## Build and simulate design on Xilinx Vivado
+	vivado -mode batch -source v/synth.tcl
 
 modelsim: $(ALL_SRC) ## Build and simulate design on Altera Modelsim
 	vlib rtl_work
