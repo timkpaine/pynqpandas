@@ -84,7 +84,6 @@
 !*.elf
 !*.bmm
 !*.xmppynqpandas.runs
-pynqpandas.xpr
 pynqpandas.cache
 pynqpandas.runs
 pynqpandas.ip_user_files
