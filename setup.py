@@ -16,7 +16,7 @@ setup(
     download_url='https://github.com/timkpaine/pynqpandas/archive/v0.0.4.tar.gz',
     author='Tim Paine',
     author_email='timothy.k.paine@gmail.com',
-    license='LGPL',
+    license='GPL',
 
     classifiers=[
         'Development Status :: 3 - Alpha',
