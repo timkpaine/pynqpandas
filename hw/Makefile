@@ -15,6 +15,8 @@ WAVE_VIEWER := /Applications/Scansion.app/Contents/MacOS/Scansion
 VCS := vcs
 VRL := verilator
 IVL := iverilog
+MS := modelsim
+VS := vivado
 COMPILER=verilator
 
 .SUFFIXES: .hpp .cpp .cc .h .c .o .opp .so
@@ -50,11 +52,6 @@ iverilog: $(ALL_SRC) ## Make target - IVerilog
 verilator: $(ALL_SRC) ## Make Target - Verilator 
 	$(VRL) $(VRL_FLAGS) -o $(TARGET) $(INCDIR) $(ALL_SRC) 
 
-
-$(TARGET): $(ALL_SRC) ## Make target
-	$(CC) $(CC_FLAGS) -o $(TARGET) $(INCDIR) $(ALL_SRC) 
-
-
 vivado: $(ALL_SRC) ## Build and simulate design on Xilinx Vivado
 	vivado -mode batch -source v/synth.tcl
 
@@ -65,18 +62,16 @@ modelsim: $(ALL_SRC) ## Build and simulate design on Altera Modelsim
 	vsim -c -do "vcd file $(TARGET).vcd; vcd add -r *; run -all"  $(TARGET) > $(TARGET).log
 	awk 'BEGIN{IGNORECASE=1} /fail| error/ && !/# Errors: 0, Warnings: 0/ { print }' $(TARGET).log
 
-# modelsim_pe: $(ALL_SRC) ## Build and simulate design on Modelsim PE
-#	vlib rtl_work
-#	vmap work rtl_work
-#	vlog +incdir+rtl +incdir+tb  +define+CC_MODELSIM -cover bcst $(ALL_SRC) ./tb/$(TARGET_TB).sv
-#	vsim -c -do "vcd file $(TARGET).vcd; vcd add -r *; coverage report -file cover.dat -lines; run -all"  -coverage  $(TARGET) > $(TARGET).log
-#	awk 'BEGIN{IGNORECASE=1} /fail| error/ && !/# Errors: 0, Warnings: 0/ { print }' $(TARGET).log
+$(TARGET): $(ALL_SRC) ## Make target
+	$(CC) $(CC_FLAGS) -o $(TARGET) $(INCDIR) $(ALL_SRC) 
 
 clean: ## Clean build files 
 	rm -f *.o $(TARGET) *.vcd modelsim.ini
 	rm -rf work rtl_work *.log transcript vsim.wlf
 	rm -rf xsim.dir xvlog.pb
 	rm -rf obj_dir
+	find -name "*.jou" | xargs rm -rf
+	find -name "*.log" | xargs rm -rf
 
 
 wave: ## View waveform
