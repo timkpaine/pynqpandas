@@ -1,6 +1,7 @@
 `timescale 1ns/1ns
 `ifndef ENV
 `define ENV
+`include "def.svh"
 
 class testing_env;
     rand int unsigned rn;

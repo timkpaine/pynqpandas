@@ -1,6 +1,7 @@
 `timescale 1ns/1ns
 `ifndef TRANS
 `define TRANS
+`include "def.svh"
 
 class transaction;
     /* transaction models the hardware in non-synthesizeable sv */

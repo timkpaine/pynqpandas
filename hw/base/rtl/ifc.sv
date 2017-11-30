@@ -1,6 +1,7 @@
 `timescale 1ns/1ns
 `ifndef IFC
 `define IFC
+`include "def.svh"
 interface  ifc
 (
     input bit clk

@@ -1,5 +1,7 @@
 `timescale 1ns/1ns
-`include "dut.sv"
+`ifndef TOP
+`define TOP
+`include "wrapper.sv"
 `include "ifc.sv"
 `include "tb.sv"
 
@@ -15,3 +17,4 @@ module top;
     wrapper dut (IFC.dut); 
     tb bench (IFC.bench);
 endmodule
+`endif
