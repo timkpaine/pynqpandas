@@ -1,38 +1,42 @@
 `timescale 1ns/1ns
-`ifndef TB
-`define TB
+`ifndef OPS
+`define OPS
 `include "def.svh"
 `include "env.sv"
 `include "trans.sv"
-`include "ops.sv"
 
-/* the testbench */
+class operations;
+    function flush(ref logic rst, ref logic in1, logic in2, logic cmd, clocking cb=NULL);
+    endfunction : flush
+
+    function run_reset();
+    endfunction : run_reset
+
+    task run_op();
+    endfunction : run_op
+
+
+
 `ifdef CC_VCS
-program tb(ifc.bench ds);
+endprogram //tb
 `else
-module tb(ifc.bench ds);
+endmodule //tb
+`endif
 `endif
 
-    transaction t;
-    testing_env v;
-    operations o;
+        repeat(10) begin
+            // initial reset
+            ds.cb.reset <= 1'b1;
+            ds.cb.in1 <= 'b0;
+            ds.cb.in2 <= 'b0;
+            ds.cb.cmd <= 'b0;
+            @(ds.cb);
+        end // end repeat
 
-    /* reset vars */
-    bit reset;
+        ds.cb.reset <= 1'b0;
+        repeat(2) @(ds.cb); // flush
 
-    /* op vars */
-    int op;
-    int in1;
-    int in2;
- 
-    initial begin
-        t = new();
-        v = new();
-        o = new();
 
-        v.read_config("./config.txt");
-
-        o.flush(ds.cb.reset, ds.cb.in1, ds.cb.in2, ds.cb.cmd, ds.cb);
         repeat(v.iter) begin
             f_randomize();
             run_reset();
@@ -40,6 +44,7 @@ module tb(ifc.bench ds);
         end
         $finish;
     end // initial begin
+
 
     /* RANDOMIZE
         based on system, randomize vars 

@@ -20,13 +20,18 @@ module dut #()
       out <= 'b0;
       case (cmd)
         NOOP : begin
+
+        end
+        ADD : begin
 `ifdef DEBUG
           $display("NOOP");
 `endif
           out <= in1 + in2;
         end
         default: begin
+`ifdef DEBUG
            $display("Fail-OPCODE");
+`endif
         end
       endcase
     end
