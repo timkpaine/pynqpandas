@@ -24,7 +24,9 @@ module tb(ifc.bench ds);
     int op;
     int in1;
     int in2;
- 
+
+    
+
     initial begin
         t = new();
         v = new();
@@ -32,7 +34,11 @@ module tb(ifc.bench ds);
 
         v.read_config("./config.txt");
 
-        o.flush(ds.cb.reset, ds.cb.in1, ds.cb.in2, ds.cb.cmd, ds.cb);
+        repeat(10) begin
+            o.flush(ds.cb.reset, ds.cb.in1, ds.cb.in2, ds.cb.cmd);
+            @(ds.cb);
+        end
+       @(ds.cb);
         repeat(v.iter) begin
             f_randomize();
             run_reset();
@@ -56,11 +62,18 @@ module tb(ifc.bench ds);
 
     /* function for running reset tests */
     task run_reset();
-        o.run_reset(v, t, ds.cb.reset, ds.cb.out, ds.cb);
+        o.run_reset(v, t, ds.cb.reset, ds.cb.out);
+        @(ds.cb);
+        ds.cb.reset <= 1'b0;
+        @(ds.cb);
+        o.check_reset(v, t, ds.cb.reset, ds.cb.out);
     endtask : run_reset
 
     task run_op();
-        o.run_op(v, t, ds.cb.cmd, ds.cb.in1, ds.cb.in2, ds.cb.out, ds.cb)
+        o.run_op(v, t, ds.cb.cmd, ds.cb.in1, ds.cb.in2, ds.cb.out);
+        @(ds.cb);
+        ds.cb.cmd = NOOP;
+        @(ds.cb);
     endtask : run_op
 
 `ifdef CC_VCS

@@ -11,6 +11,7 @@ module dut_tb;
 
     transaction t;
     testing_env v;
+    operations o;
 
     logic clk;
     logic reset;
@@ -18,6 +19,8 @@ module dut_tb;
     logic signed [NUM_SIZE-1: 0] in2;
     logic [2**CMD_SIZE_LOG2-1:0] cmd;
     logic out;
+
+    logic cb;
 
     dut dut(.clk(clk),
       .reset(reset),
@@ -32,9 +35,10 @@ module dut_tb;
     initial begin
         t = new();
         v = new();
+        o = new();
         v.read_config("./config.txt");
 
-        o.flush(dut.reset, dut.in1, dut.in2, dut.cmd);
+        o.flush(dut.reset, dut.in1, dut.in2, dut.cmd, this);
 
         v.modelsim_randomize();
         run_reset();
@@ -44,12 +48,17 @@ module dut_tb;
 
     /* function for running reset tests */
     task run_reset();
-        o.run_reset(v, t, dut.reset, dut.out);
+        o.run_reset(v, t, dut.reset, dut.out, this);
     endtask : run_reset
 
     task run_op();
-        o.run_op(v, t, dut.cmd, dut.in1, dut.in2, dut.out)
+        o.run_op(v, t, dut.cmd, dut.in1, dut.in2, dut.out, this);
     endtask : run_op
+
+
+    task clock();
+        #10;
+    endtask
 
 endmodule //tb
 `endif

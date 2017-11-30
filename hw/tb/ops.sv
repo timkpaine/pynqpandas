@@ -4,49 +4,39 @@
 `include "def.svh"
 `include "env.sv"
 `include "trans.sv"
-
+`include "ifc.sv"
 
 `ifdef CC_VERILATOR
 `define CLK #10
 `else
-`define CLK @(cb)
+`define CLK obj.clock()
 `endif
 
 class operations;
-    function flush(ref logic rst, ref logic in1, ref logic in2, ref logic cmd, ref clocking cb);
-        repeat(10) begin
-            // initial reset
-            rst <= 1'b1;
-            in1 <= 'b0;
-            in2 <= 'b0;
-            cmd <= 'b0;
+    logic op;
+    logic reset;
 
-            CLK;
+    task flush(ref logic rst, ref logic signed [NUM_SIZE-1:0] in1, ref logic signed [NUM_SIZE-1:0] in2, ref logic [2**CMD_SIZE_LOG2-1:0] cmd);
+        // initial reset
+        rst = 1'b1;
+        in1 = 'b0;
+        in2 = 'b0;
+        cmd = 'b0;
+    endtask : flush
 
-        end // end repeat
-
-        rst <= 1'b0;
-
-        CLK;
-        CLK;
-
-    endfunction : flush
-
-    function run_reset(ref testing_env v, ref transaction t, ref logic rst, ref logic out, ref clocking cb);
+    task run_reset(ref testing_env v, ref transaction t, ref logic rst, ref logic out);
         reset = v.get_reset();
         
         // drive inputs for next cycle
         if(reset) begin
-            rst <= 1'b1;
+            rst = 1'b1;
             $display("%t : %s", $realtime, "Driving Reset");
         end else begin
-            rst <= 1'b0;
+            rst = 1'b0;
         end
+    endtask : run_reset
 
-        CLK;
-        rst <= 1'b0;
-        CLK;
-
+    task check_reset(ref testing_env v, ref transaction t, ref logic rst, ref logic out);
         //golden results
         if( reset ) begin
             $display( "%t : %s", $realtime, t.check_reset( out ) ? "Pass-reset":"Fail-reset" );
@@ -55,16 +45,16 @@ class operations;
             $display( "%t : %s", $realtime, t.check_not_reset( out ) ? "Pass-not-reset" : "Fail-not-reset" );
         end
         // t.clock_tic();
-    endfunction : run_reset
+    endtask : check_reset
 
-    task run_op(ref testing_env v, ref transaction t, ref logic cmd, ref logic in1, ref logic in2, ref logic out, ref clocking cb);
+    task run_op(ref testing_env v, ref transaction t, ref logic cmd, ref logic in1, ref logic in2, ref logic out);
         op = v.get_op();
 
         // drive inputs for next cycle
         if( op > 0 ) begin
-            cmd <= op;
-            in1 <= v.in1;
-            in2 <= v.in2;
+            cmd = op;
+            in1 = v.in1;
+            in2 = v.in2;
             case( op )
                 ADD: begin
                   $display("%t : %s + %d %d ", $realtime, "Driving op  ", v.in1, v.in2);
@@ -76,15 +66,13 @@ class operations;
           t.drive_op( op, v.in1, v.in2 );
 
         end else begin
-            cmd <= NOOP;
-            in1 <= 'b0;
-            in2 <= 'b0;
+            cmd = NOOP;
+            in1 = 'b0;
+            in2 = 'b0;
         end
+    endtask : run_op
 
-        CLK;
-        ds.cb.cmd <= NOOP;
-        CLK;
-      
+    task check_op(ref testing_env v, ref transaction t, ref logic cmd, ref logic in1, ref logic in2, ref logic out);
         //golden results
         if( op ) begin
             case( op )
@@ -96,6 +84,8 @@ class operations;
           $display( "%t : %s %d %d", $realtime, t.check_noop( out ) ? "Pass-noop" : "Fail-noop", t.out, out);
         end
         // t.clock_tic();
-    endfunction : run_op
+    endtask : check_op
 
 endclass
+
+`endif
