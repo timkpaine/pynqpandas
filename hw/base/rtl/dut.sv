@@ -10,7 +10,7 @@ module dut #()
     input logic signed [NUM_SIZE-1: 0] in1,
     input logic signed [NUM_SIZE-1: 0] in2,
     input logic [2**CMD_SIZE_LOG2-1:0] cmd,
-    output logic out
+    output logic signed [NUM_SIZE-1: 0] out
 );
 
   always_ff @(posedge clk) begin
