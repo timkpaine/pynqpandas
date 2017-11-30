@@ -4,6 +4,7 @@
 `include "def.svh"
 `include "env.sv"
 `include "trans.sv"
+`include "ops.sv"
 `include "dut.sv"
 
 module dut_tb;
@@ -32,18 +33,23 @@ module dut_tb;
         t = new();
         v = new();
         v.read_config("./config.txt");
-     
-        repeat(10) begin
-            // initial reset
-            reset <= 1'b1;
-            in1 <= 'b0;
-            in2 <= 'b0;
-            cmd <= 'b0;
-            //@(ds.cb);
-        end // end repeat
 
+        o.flush(dut.reset, dut.in1, dut.in2, dut.cmd);
+
+        v.modelsim_randomize();
+        run_reset();
+        run_op();
         $finish;
     end // initial begin
+
+    /* function for running reset tests */
+    task run_reset();
+        o.run_reset(v, t, dut.reset, dut.out);
+    endtask : run_reset
+
+    task run_op();
+        o.run_op(v, t, dut.cmd, dut.in1, dut.in2, dut.out)
+    endtask : run_op
 
 endmodule //tb
 `endif
