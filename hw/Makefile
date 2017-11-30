@@ -1,23 +1,34 @@
-#################################################################################
-#										#
-#										#
-#################################################################################
+TARGET := top
+TARGET_TB := ./tb/tb.sv
 
+DUT := ./rtl/dut.sv
 
-TARGET := pp_top
-TARGET_TB := pp_tb
+RTL :=
+RTL += $(DUT)
+RTL += ./rtl/ifc.sv
+RTL += ./rtl/wrapper.sv
 
-all: $(TARGET)
+TB :=
+TB += ./tb/tb.sv
+TB += ./tb/env.sv
+TB += ./tb/trans.sv
 
-WAVE_VIEWER := gtkwave
-WAVE_VIEWER := /Applications/Scansion.app/Contents/MacOS/Scansion
+SRC :=
+SRC += def.svh
+SRC += top.sv
+SRC += $(RTL)
+SRC += $(TB)
+
+CPP_TB := ./tb/tb.cpp
+DUT_TB := ./tb/dut_tb.sv
+
+GTK := gtkwave
+SCANSION := /Applications/Scansion.app/Contents/MacOS/Scansion
 
 VCS := vcs
 VRL := verilator
-IVL := iverilog
 MS := modelsim
 VS := vivado
-COMPILER=verilator
 
 .SUFFIXES: .hpp .cpp .cc .h .c .o .opp .so
 
@@ -26,58 +37,45 @@ VCS_FLAGS :=
 VCS_FLAGS += -sv --debug --trace -D CC_VCS
 
 # verilator flags
-VRL_FLAGS :=  -cc
+VRL_FLAGS :=  -Wall --cc  +define+CC_VERILATOR=1
 
-# iverilog flags
-IVL_FLAGS :=
-IVL_FLAGS += -g2012 -D CC_IVERILOG
-
-# LIBDIR = -L.
 INCDIR = -I./rtl -I./tb
-
-# LD_FLAGS :=
-# ALL_LIBS   :=
-# ALL_LIBS   := ${LIBS} ${LIBDIR}
-
-ALL_SRC:=
-ALL_SRC+=pp_def.svh
-ALL_SRC+=pp_top.sv
 
 
 vcs: $(ALL_SRC) ## Make target - VCS
 	$(VCS) $(VCS_FLAGS) 
 
-iverilog: $(ALL_SRC) ## Make target - IVerilog
-	$(IVL) $(IVL_FLAGS) -o $(TARGET) $(INCDIR) $(ALL_SRC) 
-
 verilator: $(ALL_SRC) ## Make Target - Verilator 
-	$(VRL) $(VRL_FLAGS) -o $(TARGET) $(INCDIR) $(ALL_SRC) 
+	$(VRL) $(VRL_FLAGS) --trace $(DUT) --exe $(CPP_TB)
+	make -j -C obj_dir/ -f Vdut.mk Vdut
+	./obj_dir/Vdut
+
 
 vivado: $(ALL_SRC) ## Build and simulate design on Xilinx Vivado
-	xvlog --sv -d CC_VIVADO -i rtl/ -i tb/ pp_def.svh pp_top.sv rtl/pp.sv rtl/pp_ifc.sv tb/pp_env.sv tb/pp_tb.sv tb/pp_trans.sv
-	xelab -debug typical pp_top -s pp_top_sim
+	xvlog --sv -d CC_VIVADO -i rtl/ -i tb/ $(DUT) $(DUT_TB)
+	xelab -debug typical dut_tb -s dut_tb_sim
+	xsim dut_tb_sim --R 
 
 modelsim: $(ALL_SRC) ## Build and simulate design on Altera Modelsim
 	vlib rtl_work
 	vmap work rtl_work
-	vlog +incdir+rtl +incdir+tb +define+CC_MODELSIM +define+DEBUG $(ALL_SRC) ./tb/$(TARGET_TB).sv
-	vsim -c -do "vcd file $(TARGET).vcd; vcd add -r *; run -all"  $(TARGET) > $(TARGET).log
+	vlog +incdir+rtl +incdir+tb +define+CC_MODELSIM +define+DEBUG $(SRC) $(TARGET_TB)
+	vsim -c -do "vcd file dut.vcd; vcd add -r *; run -all"  $(TARGET) > $(TARGET).log
 	awk 'BEGIN{IGNORECASE=1} /fail| error/ && !/# Errors: 0, Warnings: 0/ { print }' $(TARGET).log
-
-$(TARGET): $(ALL_SRC) ## Make target
-	$(CC) $(CC_FLAGS) -o $(TARGET) $(INCDIR) $(ALL_SRC) 
 
 clean: ## Clean build files 
 	rm -f *.o $(TARGET) *.vcd modelsim.ini
 	rm -rf work rtl_work *.log transcript vsim.wlf
-	rm -rf xsim.dir *.pb
+	rm -rf xsim.dir *.pb dut_tb_sim.wdb
 	rm -rf obj_dir
 	find -name "*.jou" | xargs rm -rf
 	find -name "*.log" | xargs rm -rf
 
+gtk: ## View waveform with gtk
+	$(GTK) dut.vcd
 
-wave: ## View waveform
-	$(WAVE_VIEWER) $(TARGET).vcd
+scansion: ## View waveform with scansion
+	$(SCANSION) dut.vcd
 
 # Thanks to Francoise at marmelab.com for this
 .DEFAULT_GOAL := help
@@ -87,4 +85,4 @@ help:
 print-%:
 	@echo '$*=$($*)'
 
-.PHONY: clean wave modelsim iverilog vcs verilator
+.PHONY: clean wave modelsim vcs verilator
