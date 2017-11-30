@@ -1,14 +1,15 @@
 `timescale 1ns/1ns
-`include "pp_ifc.sv"
+`ifndef PP_TB
+`define PP_TB
 `include "pp_def.svh"
-`include "pp_trans.sv"
 `include "pp_env.sv"
+`include "pp_trans.sv"
 
 /* the testbench */
-`ifdef CC_MODELSIM
-module pp_tb(pp_ifc.bench ds);
-`else
+`ifdef CC_VCS
 program pp_tb(pp_ifc.bench ds);
+`else
+module pp_tb(pp_ifc.bench ds);
 `endif
 
     transaction t;
@@ -52,10 +53,10 @@ program pp_tb(pp_ifc.bench ds);
     */
 
     task f_randomize();
-`ifdef CC_MODELSIM
-        v.modelsim_randomize();
-`else
+`ifdef CC_VCS
         v.randomize();
+`else
+        v.modelsim_randomize();
 `endif
     endtask
 
@@ -130,8 +131,9 @@ program pp_tb(pp_ifc.bench ds);
 
 
 
-`ifdef CC_MODELSIM
-endmodule // pp_tb
-`else
+`ifdef CC_VCS
 endprogram //pp_tb
+`else
+endmodule // pp_tb
+`endif
 `endif

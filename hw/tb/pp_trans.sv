@@ -1,5 +1,6 @@
 `timescale 1ns/1ns
-
+`ifndef PP_TRANS
+`define PP_TRANS
 
 class transaction;
     /* transaction models the hardware in non-synthesizeable sv */
@@ -48,3 +49,4 @@ class transaction;
     endfunction : check_noop
   
 endclass
+`endif

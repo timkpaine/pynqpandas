@@ -1,4 +1,6 @@
 `timescale 1ns/1ns
+`ifndef PP_ENV
+`define PP_ENV
 
 /* these are used to determine how frequently
  * to run a read/write/search/reset op
@@ -8,7 +10,7 @@ class testing_env;
     rand int in1;
     rand int in2;
     
-`ifdef CC_MODELSIM
+`ifndef CC_VCS
     function void modelsim_randomize();
         rn =  $random();
         in1 = $random();
@@ -33,9 +35,7 @@ class testing_env;
             chars_returned = $fscanf( file, "%s %d", param, value );
             if( "RANDOM_SEED" == param ) begin
                 seed = value;
-`ifdef CC_MODELSIM
-
-`else
+`ifdef CC_VCS
                 $srandom( seed );
 `endif
             end else if( "ITERATIONS" == param ) begin
@@ -46,7 +46,7 @@ class testing_env;
                 op_thresh = value;
             end else begin
               $display( "Invalid parameter - %s", param );
-                $exit();
+                $finish();
             end
         end
     endfunction
@@ -69,3 +69,4 @@ class testing_env;
         end
     endfunction
 endclass
+`endif

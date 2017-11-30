@@ -1,10 +1,7 @@
 `timescale 1ns/1ns
-`include "pp_constants.svh"
+`include "pp_def.svh"
 
-module pp #(
-localparam NOOP=4'b0000,
-localparam FX_ADD=4'b0001
-)
+module pp #()
 (
     pp_ifc.dut d
 );
@@ -25,9 +22,6 @@ localparam FX_ADD=4'b0001
       test <= 1'b0;
       case (d.cmd)
         NOOP : begin
-
-        end
-        FX_ADD: begin
 `ifdef DEBUG
           $display("OP +");
 `endif

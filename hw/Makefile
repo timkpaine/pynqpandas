@@ -23,7 +23,7 @@ COMPILER=verilator
 
 # vcs flags
 VCS_FLAGS :=
-VCS_FLAGS += -sv --debug --trace
+VCS_FLAGS += -sv --debug --trace -D CC_VCS
 
 # verilator flags
 VRL_FLAGS :=  -cc
@@ -40,6 +40,7 @@ INCDIR = -I./rtl -I./tb
 # ALL_LIBS   := ${LIBS} ${LIBDIR}
 
 ALL_SRC:=
+ALL_SRC+=pp_def.svh
 ALL_SRC+=pp_top.sv
 
 
@@ -53,12 +54,13 @@ verilator: $(ALL_SRC) ## Make Target - Verilator
 	$(VRL) $(VRL_FLAGS) -o $(TARGET) $(INCDIR) $(ALL_SRC) 
 
 vivado: $(ALL_SRC) ## Build and simulate design on Xilinx Vivado
-	vivado -mode batch -source v/synth.tcl
+	xvlog --sv -d CC_VIVADO -i rtl/ -i tb/ pp_def.svh pp_top.sv rtl/pp.sv rtl/pp_ifc.sv tb/pp_env.sv tb/pp_tb.sv tb/pp_trans.sv
+	xelab -debug typical pp_top -s pp_top_sim
 
 modelsim: $(ALL_SRC) ## Build and simulate design on Altera Modelsim
 	vlib rtl_work
 	vmap work rtl_work
-	vlog +incdir+rtl +incdir+tb  +define+CC_MODELSIM +define+DEBUG $(ALL_SRC) ./tb/$(TARGET_TB).sv
+	vlog +incdir+rtl +incdir+tb +define+CC_MODELSIM +define+DEBUG $(ALL_SRC) ./tb/$(TARGET_TB).sv
 	vsim -c -do "vcd file $(TARGET).vcd; vcd add -r *; run -all"  $(TARGET) > $(TARGET).log
 	awk 'BEGIN{IGNORECASE=1} /fail| error/ && !/# Errors: 0, Warnings: 0/ { print }' $(TARGET).log
 
@@ -68,7 +70,7 @@ $(TARGET): $(ALL_SRC) ## Make target
 clean: ## Clean build files 
 	rm -f *.o $(TARGET) *.vcd modelsim.ini
 	rm -rf work rtl_work *.log transcript vsim.wlf
-	rm -rf xsim.dir xvlog.pb
+	rm -rf xsim.dir *.pb
 	rm -rf obj_dir
 	find -name "*.jou" | xargs rm -rf
 	find -name "*.log" | xargs rm -rf
