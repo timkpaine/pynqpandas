@@ -20,7 +20,6 @@ SRC += $(RTL)
 SRC += $(TB)
 
 CPP_TB := ./tb/tb.cpp
-DUT_TB := ./tb/dut_tb.sv
 
 GTK := gtkwave
 SCANSION := /Applications/Scansion.app/Contents/MacOS/Scansion
@@ -52,9 +51,9 @@ verilator: $(ALL_SRC) ## Make Target - Verilator
 
 
 vivado: $(ALL_SRC) ## Build and simulate design on Xilinx Vivado
-	xvlog --sv -d CC_VIVADO -i rtl/ -i tb/ $(DUT) $(DUT_TB)
-	xelab -debug typical dut_tb -s dut_tb_sim
-	xsim dut_tb_sim --R 
+	xvlog --sv -d CC_VIVADO -i rtl/ -i tb/ $(DUT) ./tb/tb.sv
+	xelab -debug typical tb -s tb_sim
+	xsim tb_sim --R 
 
 modelsim: $(ALL_SRC) ## Build and simulate design on Altera Modelsim
 	vlib rtl_work

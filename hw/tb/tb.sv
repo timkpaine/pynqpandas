@@ -4,7 +4,6 @@
 `include "def.svh"
 `include "env.sv"
 `include "trans.sv"
-`include "ops.sv"
 
 /* the testbench */
 `ifdef CC_VCS
@@ -23,7 +22,6 @@ module tb;
 
     transaction t;
     testing_env v;
-    operations o;
 
 `ifdef CC_VIVADO
     logic clk;
@@ -33,6 +31,7 @@ module tb;
     logic [2**CMD_SIZE_LOG2-1:0] cmd;
     logic out;
 
+    int op;
     dut dut(.clk(clk),
       .reset(reset),
       .in1(in1),
@@ -55,15 +54,22 @@ module tb;
     initial begin
         t = new();
         v = new();
-        o = new();
         v.read_config("./config.txt");
         repeat(10) begin
+`ifdef CC_VIVADO
+            reset = 1'b1;
+            in1 = 'b0;
+            in2 = 'b0;
+            cmd = 'b0;
+            #10;
+`else
             ds.cb.reset = 1'b1;
             ds.cb.in1 = 'b0;
             ds.cb.in2 = 'b0;
             ds.cb.cmd = 'b0;
             @(ds.cb);
-        end
+`endif
+      end
        @(ds.cb);
         repeat(v.iter) begin
             f_randomize();
