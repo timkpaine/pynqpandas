@@ -7,14 +7,14 @@
 
 /* the testbench */
 `ifdef CC_VCS
-`define CLK @(ds.cb)
+`define CLK @(ds.cb);
 program tb(ifc.bench ds);
 `else
 `ifdef CC_MODELSIM
-`define CLK @(ds.cb)
+`define CLK @(ds.cb);
 module tb(ifc.bench ds);
 `else 
-`define CLK #10
+`define CLK #10;
 `include "dut.sv"
 module tb;
 `endif
@@ -52,7 +52,6 @@ module tb;
         v = new();
         v.read_config("./config.txt");
         repeat(10) begin
-
 `ifdef CC_VIVADO
             reset <= 1'b1;
             in1 <= 'b0;
@@ -65,7 +64,7 @@ module tb;
             ds.cb.cmd <= 'b0;
 `endif
         `CLK
-      end
+        end
 
         `CLK
 
@@ -82,12 +81,13 @@ module tb;
     */
 
     task f_randomize();
+
 `ifdef CC_VCS
         v.randomize();
 `else
         v.modelsim_randomize();
 `endif
-    endtask
+endtask
 
 
     /* function for running reset tests */
@@ -100,7 +100,7 @@ module tb;
 `ifdef CC_VIVADO
             rst <= 1'b1;
 `else 
-            ds.cb.rst <= 1'b1;
+            ds.cb.reset <= 1'b1;
 `endif
             $display("%t : %s", $realtime, "Driving Reset");
         end else begin
