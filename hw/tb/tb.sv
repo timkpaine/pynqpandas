@@ -54,15 +54,15 @@ module tb;
         repeat(10) begin
 
 `ifdef CC_VIVADO
-            reset = 1'b1;
-            in1 = 'b0;
-            in2 = 'b0;
-            cmd = 'b0;
+            reset <= 1'b1;
+            in1 <= 'b0;
+            in2 <= 'b0;
+            cmd <= 'b0;
 `else
-            ds.cb.reset = 1'b1;
-            ds.cb.in1 = 'b0;
-            ds.cb.in2 = 'b0;
-            ds.cb.cmd = 'b0;
+            ds.cb.reset <= 1'b1;
+            ds.cb.in1 <= 'b0;
+            ds.cb.in2 <= 'b0;
+            ds.cb.cmd <= 'b0;
 `endif
         `CLK
       end
@@ -98,17 +98,17 @@ module tb;
         if(reset) begin
 
 `ifdef CC_VIVADO
-            rst = 1'b1;
+            rst <= 1'b1;
 `else 
-            ds.cb.rst = 1'b1;
+            ds.cb.rst <= 1'b1;
 `endif
             $display("%t : %s", $realtime, "Driving Reset");
         end else begin
 
 `ifdef CC_VIVADO
-            rst = 1'b0;
+            rst <= 1'b0;
 `else 
-            ds.cb.reset = 1'b0;
+            ds.cb.reset <= 1'b0;
 `endif
 
         end
@@ -149,13 +149,13 @@ module tb;
         if( op > 0 ) begin
 
 `ifdef CC_VIVADO
-            cmd = op;
-            in1 = v.in1;
-            in2 = v.in2;
+            cmd <= op;
+            in1 <= v.in1;
+            in2 <= v.in2;
 `else 
-            ds.cb.cmd = op;
-            ds.cb.in1 = v.in1;
-            ds.cb.in2 = v.in2;
+            ds.cb.cmd <= op;
+            ds.cb.in1 <= v.in1;
+            ds.cb.in2 <= v.in2;
 `endif
             case( op )
                 ADD: begin
@@ -170,21 +170,21 @@ module tb;
         end else begin
 
 `ifdef CC_VIVADO
-            cmd = NOOP;
-            in1 = 'b0;
-            in2 = 'b0;
+            cmd <= NOOP;
+            in1 <= 'b0;
+            in2 <= 'b0;
 `else 
-            ds.cb.cmd = NOOP;
-            ds.cb.in1 = 'b0;
-            ds.cb.in2 = 'b0;
+            ds.cb.cmd <= NOOP;
+            ds.cb.in1 <= 'b0;
+            ds.cb.in2 <= 'b0;
 `endif
 
         end
         `CLK
 `ifdef CC_VIVADO
-        cmd = NOOP;
+        cmd <= NOOP;
 `else 
-        ds.cb.cmd = NOOP;
+        ds.cb.cmd <= NOOP;
 `endif
         `CLK
         //golden results
