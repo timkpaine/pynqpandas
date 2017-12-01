@@ -7,14 +7,14 @@
 
 /* the testbench */
 `ifdef CC_VCS
-`define MOD ds.cb.
+`define CLK @(ds.cb)
 program tb(ifc.bench ds);
 `else
 `ifdef CC_MODELSIM
-`define MOD ds.cb.
+`define CLK @(ds.cb)
 module tb(ifc.bench ds);
 `else 
-`define MOD 
+`define CLK #10
 `include "dut.sv"
 module tb;
 `endif
@@ -22,31 +22,27 @@ module tb;
 
     transaction t;
     testing_env v;
+    int op;
+    logic reset;
 
 `ifdef CC_VIVADO
     logic clk;
-    logic reset;
     logic signed [NUM_SIZE-1: 0] in1;
     logic signed [NUM_SIZE-1: 0] in2;
     logic [2**CMD_SIZE_LOG2-1:0] cmd;
     logic out;
+    logic rst;
 
-    int op;
     dut dut(.clk(clk),
-      .reset(reset),
+      .reset(rst),
       .in1(in1),
       .in2(in2),
       .cmd(cmd),
       .out(out)
     );
-
     always #5 clk = ~clk;
 `else
-    /* reset vars */
-    bit reset;
-
     /* op vars */
-    int op;
     int in1;
     int in2;
 `endif
@@ -56,21 +52,23 @@ module tb;
         v = new();
         v.read_config("./config.txt");
         repeat(10) begin
+
 `ifdef CC_VIVADO
             reset = 1'b1;
             in1 = 'b0;
             in2 = 'b0;
             cmd = 'b0;
-            #10;
 `else
             ds.cb.reset = 1'b1;
             ds.cb.in1 = 'b0;
             ds.cb.in2 = 'b0;
             ds.cb.cmd = 'b0;
-            @(ds.cb);
 `endif
+        `CLK
       end
-       @(ds.cb);
+
+        `CLK
+
         repeat(v.iter) begin
             f_randomize();
             run_reset();
@@ -98,20 +96,48 @@ module tb;
         
         // drive inputs for next cycle
         if(reset) begin
-            ds.cb.reset = 1'b1;
+
+`ifdef CC_VIVADO
+            rst = 1'b1;
+`else 
+            ds.cb.rst = 1'b1;
+`endif
             $display("%t : %s", $realtime, "Driving Reset");
         end else begin
+
+`ifdef CC_VIVADO
+            rst = 1'b0;
+`else 
             ds.cb.reset = 1'b0;
+`endif
+
         end
-        @(ds.cb);
+        `CLK
+
+`ifdef CC_VIVADO
+        rst <= 1'b0;
+`else 
         ds.cb.reset <= 1'b0;
-        @(ds.cb);
+`endif
+        `CLK
         //golden results
         if( reset ) begin
+
+`ifdef CC_VIVADO
+            $display( "%t : %s", $realtime, t.check_reset( out ) ? "Pass-reset":"Fail-reset" );
+`else 
             $display( "%t : %s", $realtime, t.check_reset( ds.cb.out ) ? "Pass-reset":"Fail-reset" );
+`endif
+
             t.drive_reset();
         end else begin
-            $display( "%t : %s", $realtime, t.check_not_reset( ds.cb.out ) ? "Pass-not-reset" : "Fail-not-reset" );
+
+`ifdef CC_VIVADO
+            $display( "%t : %s", $realtime, t.check_not_reset(out) ? "Pass-not-reset" : "Fail-not-reset" );
+`else 
+            $display( "%t : %s", $realtime, t.check_not_reset(ds.cb.out) ? "Pass-not-reset" : "Fail-not-reset" );
+`endif
+
         end
         // t.clock_tic();
     endtask : run_reset
@@ -121,9 +147,16 @@ module tb;
 
         // drive inputs for next cycle
         if( op > 0 ) begin
+
+`ifdef CC_VIVADO
+            cmd = op;
+            in1 = v.in1;
+            in2 = v.in2;
+`else 
             ds.cb.cmd = op;
             ds.cb.in1 = v.in1;
             ds.cb.in2 = v.in2;
+`endif
             case( op )
                 ADD: begin
                   $display("%t : %s + %d %d ", $realtime, "Driving op  ", v.in1, v.in2);
@@ -135,22 +168,46 @@ module tb;
           t.drive_op( op, v.in1, v.in2 );
 
         end else begin
+
+`ifdef CC_VIVADO
+            cmd = NOOP;
+            in1 = 'b0;
+            in2 = 'b0;
+`else 
             ds.cb.cmd = NOOP;
             ds.cb.in1 = 'b0;
             ds.cb.in2 = 'b0;
+`endif
+
         end
-        @(ds.cb);
+        `CLK
+`ifdef CC_VIVADO
+        cmd = NOOP;
+`else 
         ds.cb.cmd = NOOP;
-        @(ds.cb);
+`endif
+        `CLK
         //golden results
         if( op ) begin
             case( op )
                 ADD: begin
+
+`ifdef CC_VIVADO
+                    $display( "%t : %s %d %d", $realtime, t.check_op( out ) ? "Pass-op +" : "Fail-op +", t.out, out);
+`else 
                     $display( "%t : %s %d %d", $realtime, t.check_op( ds.cb.out ) ? "Pass-op +" : "Fail-op +", t.out, ds.cb.out);
+`endif
+
                 end
             endcase
         end else begin
+
+`ifdef CC_VIVADO
+          $display( "%t : %s %d %d", $realtime, t.check_noop( out ) ? "Pass-noop" : "Fail-noop", t.out, out);
+`else 
           $display( "%t : %s %d %d", $realtime, t.check_noop( ds.cb.out ) ? "Pass-noop" : "Fail-noop", t.out, ds.cb.out);
+`endif
+
         end
         // t.clock_tic();
     endtask : run_op
