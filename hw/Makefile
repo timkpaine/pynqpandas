@@ -19,7 +19,8 @@ SRC += top.sv
 SRC += $(RTL)
 SRC += $(TB)
 
-CPP_TB := ./tb/tb.cpp
+CPP_SRC := ./tb/src/*.cpp
+CPP_TB := ./tb/src/tb.cpp
 
 GTK := gtkwave
 SCANSION := /Applications/Scansion.app/Contents/MacOS/Scansion
@@ -45,7 +46,7 @@ vcs: $(ALL_SRC) ## Make target - VCS
 	$(VCS) $(VCS_FLAGS) 
 
 verilator: $(ALL_SRC) ## Make Target - Verilator 
-	$(VRL) $(VRL_FLAGS) --trace $(DUT) --exe $(CPP_TB)
+	$(VRL) $(VRL_FLAGS) --trace $(DUT) --exe $(CPP_SRC)
 	make -j -C obj_dir/ -f Vdut.mk Vdut
 	./obj_dir/Vdut
 
