@@ -53,7 +53,9 @@ verilator: $(ALL_SRC) ## Make Target - Verilator
 vivado: $(ALL_SRC) ## Build and simulate design on Xilinx Vivado
 	xvlog --sv -d CC_VIVADO -i rtl/ -i tb/ $(DUT) ./tb/tb.sv
 	xelab -debug typical tb -s tb_sim
-	xsim tb_sim --R 
+	xsim tb_sim --R > $(TARGET).log
+	awk 'BEGIN{IGNORECASE=1} /fail| error/ && !/# Errors: 0, Warnings: 0/ { print }' $(TARGET).log
+
 
 modelsim: $(ALL_SRC) ## Build and simulate design on Altera Modelsim
 	vlib rtl_work
@@ -65,7 +67,7 @@ modelsim: $(ALL_SRC) ## Build and simulate design on Altera Modelsim
 clean: ## Clean build files 
 	rm -f *.o $(TARGET) *.vcd modelsim.ini
 	rm -rf work rtl_work *.log transcript vsim.wlf
-	rm -rf xsim.dir *.pb dut_tb_sim.wdb
+	rm -rf xsim.dir *.pb tb_sim.wdb
 	rm -rf obj_dir
 	find -name "*.jou" | xargs rm -rf
 	find -name "*.log" | xargs rm -rf
