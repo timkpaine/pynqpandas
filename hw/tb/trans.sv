@@ -23,13 +23,14 @@ class transaction;
     endfunction : drive_reset
 
     /* this checks that reset functions properly */
-    function bit check_reset( bit o );
+    function bit check_reset(int o);
+        out = 0;
         return(o == 0 );
     endfunction : check_reset
 
     /* check reset on output */
-    function bit check_not_reset( bit o );
-        return(o == 1 );
+    function bit check_not_reset(int o );
+        return(o == out);
     endfunction : check_not_reset
 
     function bit check_op( int o ); 
@@ -41,11 +42,11 @@ class transaction;
                 out = in1 + in2;
             end
         endcase
-      return ( out == out );
+      return ( o == out );
     endfunction : check_op
 
-    function bit check_noop( int out );
-        return ( out == out );
+    function bit check_noop( int o );
+        return ( o == out );
     endfunction : check_noop
   
 endclass
