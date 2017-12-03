@@ -69,8 +69,8 @@ clean: ## Clean build files
 	rm -rf work rtl_work *.log transcript vsim.wlf
 	rm -rf xsim.dir *.pb tb_sim.wdb
 	rm -rf obj_dir
-	find -name "*.jou" | xargs rm -rf
-	find -name "*.log" | xargs rm -rf
+	find . -name "*.jou" | xargs rm -rf
+	find . -name "*.log" | xargs rm -rf
 
 gtk: ## View waveform with gtk
 	$(GTK) dut.vcd
