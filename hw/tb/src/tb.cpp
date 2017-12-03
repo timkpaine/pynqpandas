@@ -11,17 +11,20 @@ int main(int argc, char **argv, char **env) {
     Verilated::commandArgs(argc, argv);
 
     // init top verilog instance
-    Vdut* top = new Vdut;
+    Vdut dut;
 
     // init trace dump
     Verilated::traceEverOn(true);
-    VerilatedVcdC* tfp = new VerilatedVcdC;
-    top->trace (tfp, 99);
-    tfp->open ("dut.vcd");
+    VerilatedVcdC tr;
+    dut.trace(&tr, 99);
+    tr.open("dut.vcd");
+
+    // init CPP model
+    Dut model;
 
     cout << "Running initialization" << endl;
-    flush(top, tfp);
-    tfp->close();
+    flush(model, dut, tr);
+    tr.close();
 
     cout << "Finished TB" << endl;
     exit(0);

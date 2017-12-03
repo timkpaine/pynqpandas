@@ -6,6 +6,7 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
-bool flush(Vdut* top, VerilatedVcdC* tfp);
+bool flush(Dut& model, Vdut& top, VerilatedVcdC& tfp);
+bool reset(Dut& model, Vdut& top, VerilatedVcdC& tfp);
 
 #endif

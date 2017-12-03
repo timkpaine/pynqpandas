@@ -2,6 +2,7 @@
 #define DUT
 
 class Dut {
+public:
     Dut() : reset(false), valid(false), out(0) {};
     ~Dut(){};
 

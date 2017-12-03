@@ -9,22 +9,22 @@ using namespace std;
 
 
 
-bool flush(Vdut* top, VerilatedVcdC* tfp){
+bool flush(Dut& model, Vdut& dut, VerilatedVcdC& tr){
     // initialize simulation inputs
-    top->clk = 1;
-    top->reset = 1;
-    top->enable = 1;
+    dut.clk = 1;
+    dut.reset = 1;
+    dut.enable = 1;
 
     for (int i=0; i<10; i++) {
-        top->reset = (i < 2);
+        dut.reset = (i < 2);
         // dump variables into VCD file and toggle clock
         for (int clk=0; clk<2; clk++) {
-            tfp->dump (2*i+clk);
-            top->clk = !top->clk;
-            top->eval ();
-            if(top->reset){
-                cout << "Asserting reset : " << 0 << " : " << top->out << endl;
-                assert(top->out == 0);
+            tr.dump (2*i+clk);
+            dut.clk = !dut.clk;
+            dut.eval();
+            if(dut.reset){
+                cout << "Asserting reset : " << 0 << " : " << dut.out << endl;
+                assert(dut.out == 0);
             }
         }
         if (Verilated::gotFinish()){
