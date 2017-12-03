@@ -1,0 +1,1 @@
+g++ -o sim -lsystemc *.cpp  && echo "Compile done. Starting run..." && ./sim  
