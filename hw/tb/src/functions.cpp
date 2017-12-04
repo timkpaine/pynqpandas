@@ -11,9 +11,15 @@ using namespace std;
 
 bool flush(Dut& model, Vdut& dut, VerilatedVcdC& tr){
     // initialize simulation inputs
+    //clk =1
     dut.clk = 1;
+    model.clk = 1;
+    //reset =1
     dut.reset = 1;
+    model.reset = 1;
     dut.enable = 1;
+    model.enable = 1;
+
 
     for (int i=0; i<10; i++) {
         dut.reset = (i < 2);
