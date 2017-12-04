@@ -8,7 +8,6 @@ using namespace std;
 #include "verilated_vcd_c.h"
 
 
-
 bool flush(Dut& model, Vdut& dut, VerilatedVcdC& tr){
     // initialize simulation inputs
     
