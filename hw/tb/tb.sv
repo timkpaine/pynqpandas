@@ -57,8 +57,8 @@ module tb;
         v.read_config("./config.txt");
         repeat(10) begin
             `ifdef CC_VIVADO
-            reset <= 1'b1;
-            enable <= 1'b1;
+            rst = 1'b1;
+            enable = 1'b1;
             in1 <= 'b0;
             in2 <= 'b0;
             cmd <= 'b0;
@@ -130,7 +130,7 @@ endtask
         if( reset ) begin
 
             `ifdef CC_VIVADO
-            $display("%t : %s : %d - %d", $realtime, t.check_reset(out) ? "Pass-reset":"Fail-reset", t.out, out);
+            $display("%t : %s : %d - %d", $realtime, t.check_reset(dut.out) ? "Pass-reset":"Fail-reset", t.out, dut.out);
             `else 
             $display("%t : %s : %d - %d", $realtime, t.check_reset(ds.cb.out) ? "Pass-reset":"Fail-reset", t.out, ds.cb.out);
             `endif

@@ -25,6 +25,7 @@ module dut #()
         o <= 'b0;
         v <= 1'b0;
       end else begin
+        o <= o;
         case (cmd)
           NOOP : begin
           end
@@ -41,6 +42,9 @@ module dut #()
           end
         endcase
       end
+    end else begin
+      o <= 'b0;
+      v <= 1'b0;
     end
   end
 

@@ -20,7 +20,6 @@ bool flush(Vdut* top, VerilatedVcdC* tfp){
       if(top->reset){
           cout << "Asserting reset : " << 0 << " : " << top->out << endl;
           assert(top->out == 0);
-      }
     }
     if (Verilated::gotFinish())  exit(0);
   }
@@ -41,8 +40,8 @@ int main(int argc, char **argv, char **env) {
  
   cout << "Running initialization" << endl;
   flush(top, tfp);
-  tfp->close();
 
+  tfp->close();
   cout << "Finished TB" << endl;
   exit(0);
 }
