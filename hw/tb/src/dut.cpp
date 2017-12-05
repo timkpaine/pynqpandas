@@ -9,7 +9,7 @@ void Dut::eval(){
             valid = true;
         } else{
             if(cmd == 0){
-                out = out; // noop
+                // noop
             } else if(cmd == 1){
                 out = in1 + in2;
             }
