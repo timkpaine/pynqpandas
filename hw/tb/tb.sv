@@ -26,14 +26,14 @@ module tb;
     logic reset;
 
     `ifdef CC_VIVADO
-    logic clk;
-    logic signed [NUM_SIZE-1: 0] in1;
-    logic signed [NUM_SIZE-1: 0] in2;
-    logic [2**CMD_SIZE_LOG2-1:0] cmd;
+    logic clk = 0;
+    logic signed [NUM_SIZE-1: 0] in1 = 0;
+    logic signed [NUM_SIZE-1: 0] in2 = 0;
+    logic [2**CMD_SIZE_LOG2-1:0] cmd = 0;
     logic signed [NUM_SIZE-1:0] out;
     logic valid;
-    logic enable;
-    logic rst;
+    logic enable = 1;
+    logic rst = 0;
 
     dut dut(.clk(clk),
       .reset(rst),
@@ -44,8 +44,10 @@ module tb;
       .valid(valid),
       .out(out)
     );
+   
     always #5 clk = ~clk;
-    `else
+
+   `else
     /* op vars */
     int in1;
     int in2;
@@ -57,8 +59,8 @@ module tb;
         v.read_config("./config.txt");
         repeat(10) begin
             `ifdef CC_VIVADO
-            rst = 1'b1;
-            enable = 1'b1;
+            rst <= 1'b1;
+            enable <= 1'b1;
             in1 <= 'b0;
             in2 <= 'b0;
             cmd <= 'b0;
@@ -69,7 +71,7 @@ module tb;
             ds.cb.in2 <= 'b0;
             ds.cb.cmd <= 'b0;
             `endif
-        `CLK
+            `CLK
         end
 
         `CLK
@@ -102,7 +104,6 @@ endtask
         
         // drive inputs for next cycle
         if(reset) begin
-
             `ifdef CC_VIVADO
             rst <= 1'b1;
             `else 
@@ -110,14 +111,13 @@ endtask
             `endif
             $display("%t : %s", $realtime, "Driving Reset");
         end else begin
-
             `ifdef CC_VIVADO
             rst <= 1'b0;
             `else 
             ds.cb.reset <= 1'b0;
             `endif
-
         end
+
         `CLK
 
         `ifdef CC_VIVADO
@@ -128,9 +128,8 @@ endtask
         `CLK
         //golden results
         if( reset ) begin
-
             `ifdef CC_VIVADO
-            $display("%t : %s : %d - %d", $realtime, t.check_reset(dut.out) ? "Pass-reset":"Fail-reset", t.out, dut.out);
+            $display("%t : %s : %d - %d", $realtime, t.check_reset(out) ? "Pass-reset":"Fail-reset", t.out, out);
             `else 
             $display("%t : %s : %d - %d", $realtime, t.check_reset(ds.cb.out) ? "Pass-reset":"Fail-reset", t.out, ds.cb.out);
             `endif
