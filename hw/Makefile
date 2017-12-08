@@ -19,7 +19,7 @@ SRC += top.sv
 SRC += $(RTL)
 SRC += $(TB)
 
-CPP_SRC := ./tb/src/*.cpp
+CPP_SRC := 
 CPP_TB := ./tb/src/tb.cpp
 
 GTK := gtkwave
@@ -46,10 +46,14 @@ vcs: $(ALL_SRC) ## Make target - VCS
 	$(VCS) $(VCS_FLAGS) 
 
 verilator: $(ALL_SRC) ## Make Target - Verilator 
-	$(VRL) $(VRL_FLAGS) --trace $(DUT) --exe $(CPP_SRC)
+	$(VRL) $(VRL_FLAGS) --trace $(DUT) --exe $(CPP_SRC) tb/src/dut.cpp $(CPP_TB)
 	make -j -C obj_dir/ -f Vdut.mk Vdut
 	./obj_dir/Vdut
 
+relay: $(ALL_SRC) # FIXME
+	$(VRL) $(VRL_FLAGS) --trace rtl/relay.sv --exe $(CPP_SRC) tb/src/relay.cpp tb/src/relay_tb.cpp
+	make -j -C obj_dir/ -f Vrelay.mk Vrelay
+	./obj_dir/Vrelay
 
 vivado: $(ALL_SRC) ## Build and simulate design on Xilinx Vivado
 	xvlog --sv -d CC_VIVADO -i rtl/ -i tb/ $(DUT) ./tb/tb.sv

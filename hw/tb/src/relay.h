@@ -1,21 +1,21 @@
-#ifndef DUT
-#define DUT
-#include "Vdut.h"
+#ifndef RELAY 
+#define RELAY
+#include <iostream>
+using namespace std;
+#include "Vrelay.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
-class Dut {
+class Relay{
 public:
-    Dut()
+    Relay()
      : reset(false),
        enable(false),
        clk(false),
-       in1(0),
-       in2(0),
-       cmd(0),
+       in(0),
        valid(false),
        out(0) {};
-    ~Dut(){};
+    ~Relay(){};
 
     void eval();
     void check_reset(int out);
@@ -24,16 +24,14 @@ public:
     bool reset;
     bool enable;
     bool clk;
-    int in1;
-    int in2;
-    int cmd;
+    int in;
 
     // outs
     bool valid;
     int out;
 };
 
-bool flush(Dut& model, Vdut& top, VerilatedVcdC& tfp);
-bool reset(Dut& model, Vdut& top, VerilatedVcdC& tfp);
+bool flush(Relay& model, Vrelay& top, VerilatedVcdC& tfp);
+//bool reset(Relay& model, Vrelay& top, VerilatedVcdC& tfp);
 
 #endif

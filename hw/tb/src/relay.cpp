@@ -1,14 +1,25 @@
-#include <iostream>
-using namespace std;
+#include "relay.h"
+#include <cassert>
 
-#include "functions.h"
-#include "dut.h"
-#include "Vdut.h"
-#include "verilated.h"
-#include "verilated_vcd_c.h"
+void Relay::eval(){
+    // Clock ticking
+    if(enable){
+        if(reset){
+            out = 0;
+            valid = true;
+        } else{
+        }
+    } else {
+        valid = false;
+    }
+}
 
+void Relay::check_reset(int o){
+    assert(out == o);
+    assert(out == 0);
+}
 
-bool flush(Dut& model, Vdut& dut, VerilatedVcdC& tr){
+bool flush(Relay& model, Vrelay& dut, VerilatedVcdC& tr){
     // initialize simulation inputs
     
     //clk=1

@@ -1,16 +1,16 @@
 #include <iostream>
 using namespace std;
 
-#include "Vdut.h"
+#include "Vrelay.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
-#include "dut.h"
+#include "relay.h"
 
 int main(int argc, char **argv, char **env) {
     Verilated::commandArgs(argc, argv);
 
     // init top verilog instance
-    Vdut dut;
+    Vrelay dut;
 
     // init trace dump
     Verilated::traceEverOn(true);
@@ -19,7 +19,7 @@ int main(int argc, char **argv, char **env) {
     tr.open("dut.vcd");
 
     // init CPP model
-    Dut model;
+    Relay model;
 
     cout << "Running initialization" << endl;
     flush(model, dut, tr);
