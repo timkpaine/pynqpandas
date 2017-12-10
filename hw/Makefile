@@ -20,7 +20,7 @@ SRC += $(RTL)
 SRC += $(TB)
 
 CPP_SRC := 
-CPP_TB := ./tb/src/tb.cpp
+CPP_TB := tb/src/tb.cpp
 
 GTK := gtkwave
 SCANSION := /Applications/Scansion.app/Contents/MacOS/Scansion
@@ -46,21 +46,15 @@ vcs: $(ALL_SRC) ## Make target - VCS
 	$(VCS) $(VCS_FLAGS) 
 
 verilator: $(ALL_SRC) ## Make Target - Verilator 
-	$(VRL) $(VRL_FLAGS) --trace $(DUT) --exe $(CPP_SRC) tb/src/dut.cpp $(CPP_TB)
+	$(VRL) $(VRL_FLAGS) --trace $(DUT) --exe tb/src/dut.cpp $(CPP_TB)
 	make -j -C obj_dir/ -f Vdut.mk Vdut
 	./obj_dir/Vdut
-
-relay: $(ALL_SRC) # FIXME
-	$(VRL) $(VRL_FLAGS) --trace rtl/relay.sv --exe $(CPP_SRC) tb/src/relay.cpp tb/src/relay_tb.cpp
-	make -j -C obj_dir/ -f Vrelay.mk Vrelay
-	./obj_dir/Vrelay
 
 vivado: $(ALL_SRC) ## Build and simulate design on Xilinx Vivado
 	xvlog --sv -d CC_VIVADO -i rtl/ -i tb/ $(DUT) ./tb/tb.sv
 	xelab -debug typical tb -s tb_sim
 	xsim tb_sim --R > $(TARGET).log
 	awk 'BEGIN{IGNORECASE=1} /fail| error/ && !/# Errors: 0, Warnings: 0/ { print }' $(TARGET).log
-
 
 modelsim: $(ALL_SRC) ## Build and simulate design on Altera Modelsim
 	vlib rtl_work
@@ -83,6 +77,11 @@ gtk: ## View waveform with gtk
 scansion: ## View waveform with scansion
 	$(SCANSION) dut.vcd
 
+%: $(ALL_SRC)  ## Make a submodule
+	$(VRL) $(VRL_FLAGS) --trace rtl/$@.sv --exe $(CPP_SRC) tb/src/$@.cpp tb/src/$@_tb.cpp
+	make -j -C obj_dir/ -f V$@.mk V$@
+	./obj_dir/V$@
+
 # Thanks to Francoise at marmelab.com for this
 .DEFAULT_GOAL := help
 help:
@@ -91,4 +90,4 @@ help:
 print-%:
 	@echo '$*=$($*)'
 
-.PHONY: clean wave modelsim vcs verilator
+.PHONY: clean gtk scansion modelsim vcs verilator vivado

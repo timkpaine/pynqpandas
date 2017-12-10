@@ -8,13 +8,13 @@ module relay #()
     input logic clk,
     input logic reset,
     input logic enable,
-    input logic signed [NUM_SIZE-1: 0] in,
+    input logic signed [NUM: 0] in,
     output logic valid, 
-    output logic signed [NUM_SIZE-1: 0] out,
+    output logic signed [NUM: 0] out,
     input logic _delay,
     output logic delay_
 );
-  logic signed [NUM_SIZE-1: 0] o;
+  logic signed [NUM: 0] o;
   logic v;
   logic d;
   assign out = o;
@@ -22,7 +22,7 @@ module relay #()
   assign delay_ = d;
 
   logic holding;
-  logic signed [NUM_SIZE-1:0] hold;
+  logic signed [NUM:0] hold;
 
   always_ff @(posedge clk) begin
     if(enable) begin

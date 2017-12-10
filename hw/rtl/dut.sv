@@ -8,13 +8,13 @@ module dut #()
     input logic clk,
     input logic reset,
     input logic enable,
-    input logic signed [NUM_SIZE-1: 0] in1,
-    input logic signed [NUM_SIZE-1: 0] in2,
-    input logic [2**CMD_SIZE_LOG2-1:0] cmd,
+    input logic signed [NUM: 0] in1,
+    input logic signed [NUM: 0] in2,
+    input logic [CMD:0] cmd,
     output logic valid, 
-    output logic signed [NUM_SIZE-1: 0] out
+    output logic signed [NUM: 0] out
 );
-  logic signed [NUM_SIZE-1: 0] o;
+  logic signed [NUM: 0] o;
   logic v;
   assign out = o;
   assign valid = v;

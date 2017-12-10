@@ -10,9 +10,9 @@ interface  ifc
 logic reset;
 logic enable;
 logic valid;
-logic [2**CMD_SIZE_LOG2-1:0] cmd;
-logic [NUM_SIZE-1:0] in1, in2;
-logic [NUM_SIZE-1:0] out;
+logic [CMD:0] cmd;
+logic [NUM:0] in1, in2;
+logic [NUM:0] out;
 
 modport dut (
     input clk, reset, enable,
