@@ -7,10 +7,10 @@
 module outbuf #()
 (
     input logic clk, 
-    input logic signed [NUM-1:0] cdata,
+    input logic signed [NUM:0] cdata,
     input logic cvalid,
     output logic cstop, 
-    output logic signed [NUM-1:0] odata,
+    output logic signed [NUM:0] odata,
     output logic ovalid,
     input ostop
 );

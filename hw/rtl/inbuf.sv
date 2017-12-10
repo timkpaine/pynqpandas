@@ -7,15 +7,15 @@
 module inbuf #()
 (
     input logic clk,
-    input logic signed[NUM-1:0] idata,
+    input logic signed[NUM:0] idata,
     input logic ivalid,
     output logic istop,
-    output logic signed [NUM-1:0] cdata,
+    output logic signed [NUM:0] cdata,
     output logic cvalid,
     input logic cstop
 );
 
-logic [NUM-1:0] ireg = 'bx; // Empty
+logic [NUM:0] ireg = 'bx; // Empty
 logic rvalid = 1'b0;      // ireg is full
 
 assign istop = rvalid;               // Stop if buffering

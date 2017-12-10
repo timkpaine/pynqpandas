@@ -27,10 +27,10 @@ module tb;
 
     `ifdef CC_VIVADO
     logic clk = 0;
-    logic signed [NUM: 0] in1 = 0;
-    logic signed [NUM: 0] in2 = 0;
-    logic [CMD:0] cmd = 0;
-    logic signed [NUM:0] out;
+    logic signed [NUM-1: 0] in1 = 0;
+    logic signed [NUM-1: 0] in2 = 0;
+    logic [CMD-1:0] cmd = 0;
+    logic signed [NUM-1:0] out;
     logic valid;
     logic enable = 1;
     logic rst = 0;
