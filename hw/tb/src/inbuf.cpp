@@ -19,7 +19,6 @@ void Inbuf::eval(){
 }
 
 void Inbuf::check_reset(int o){
-    assert(true);
     assert(cdata == 0);
     assert(cdata == o);
 }
@@ -50,6 +49,11 @@ bool flush(Inbuf& model, Vinbuf& dut, VerilatedVcdC& tr){
             // clock edge
             dut.eval();
             model.eval();
+
+            if(dut.reset){
+                cout << "Asserting reset : " << 0 << " : " << dut.cdata << " " << model.cdata << endl;
+                model.check_reset(dut.cdata);
+            }
         }
         if (Verilated::gotFinish()){
             cout << "Finished" << endl;
