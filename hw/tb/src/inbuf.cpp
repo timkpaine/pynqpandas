@@ -2,10 +2,14 @@
 #include <cassert>
 
 void Inbuf::eval(){
-    if (!cstop && rvalid){
+    if(reset){
         ireg = 0;
         rvalid = false;
-    } else if (cstop && !rvalid){
+    }
+    if(!cstop && rvalid){
+        ireg = 0;
+        rvalid = false;
+    } else if(cstop && !rvalid){
         ireg = idata;
         rvalid = true;
     }
@@ -16,6 +20,8 @@ void Inbuf::eval(){
 
 void Inbuf::check_reset(int o){
     assert(true);
+    assert(cdata == 0);
+    assert(cdata == o);
 }
 
 bool flush(Inbuf& model, Vinbuf& dut, VerilatedVcdC& tr){
@@ -25,7 +31,14 @@ bool flush(Inbuf& model, Vinbuf& dut, VerilatedVcdC& tr){
     dut.clk = 1;
     model.clk = 1;
     
+    //reset=1
+    dut.reset = 1;
+    model.reset = 1;
+    
     for (int i=0; i<10; i++) {
+        dut.reset = (i < 2);
+        model.reset = (i < 2);
+
         // dump variables into VCD file and toggle clock
         for (int clk=0; clk<2; clk++) {
             tr.dump(2*i+clk);

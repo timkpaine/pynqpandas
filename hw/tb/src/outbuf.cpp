@@ -3,6 +3,10 @@
 
 void Outbuf::eval(){
     cstop = ovalid && ostop;
+    if(reset){
+        odata = 0;
+        ovalid = false;
+    }
     if(!cstop){
         odata = cdata;
         ovalid = cvalid;
