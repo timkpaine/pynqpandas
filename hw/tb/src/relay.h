@@ -31,7 +31,6 @@ public:
     int out;
 };
 
-bool flush(Relay& model, Vrelay& top, VerilatedVcdC& tfp);
-//bool reset(Relay& model, Vrelay& top, VerilatedVcdC& tfp);
+bool flush(Relay&, Vrelay&, VerilatedVcdC&);
 
 #endif

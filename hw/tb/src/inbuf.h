@@ -42,6 +42,7 @@ public:
     bool rvalid;
 };
 
-bool flush(Inbuf& model, Vinbuf& top, VerilatedVcdC& tfp);
+bool flush(Inbuf&, Vinbuf&, VerilatedVcdC&);
+bool test_flow(Inbuf&, Vinbuf&, VerilatedVcdC&);
 
 #endif

@@ -35,6 +35,6 @@ public:
     bool ovalid;
 };
 
-bool flush(Outbuf& model, Voutbuf& top, VerilatedVcdC& tfp);
+bool flush(Outbuf&, Voutbuf&, VerilatedVcdC&);
 
 #endif
