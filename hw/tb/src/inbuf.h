@@ -18,7 +18,9 @@ public:
        cdata(0),
        cvalid(false),
        ireg(0),
-       rvalid(false) {};
+       ireg_n(0),
+       rvalid(false),
+       rvalid_n(false) {};
     ~Inbuf(){};
 
     void eval();
@@ -39,7 +41,9 @@ public:
 
     //members
     int ireg;
+    int ireg_n;
     bool rvalid;
+    bool rvalid_n;
 };
 
 bool flush(Inbuf&, Vinbuf&, VerilatedVcdC&);

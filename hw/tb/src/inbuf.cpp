@@ -2,17 +2,21 @@
 #include <cassert>
 
 void Inbuf::eval(){
+    ireg = ireg_n;
+    rvalid = rvalid_n;
+    
     if(reset){
-        ireg = 0;
-        rvalid = false;
+        ireg_n = 0;
+        rvalid_n = false;
     }
     if(!cstop && rvalid){
-        ireg = 0;
-        rvalid = false;
+        ireg_n = 0;
+        rvalid_n = false;
     } else if(cstop && !rvalid){
-        ireg = idata;
-        rvalid = true;
+        ireg_n = idata;
+        rvalid_n = true;
     }
+
     istop = rvalid;
     cdata = istop ? ireg : idata;
     cvalid = istop ? rvalid : ivalid;
