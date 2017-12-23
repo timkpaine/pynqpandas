@@ -2,24 +2,22 @@
 #include <cassert>
 
 void Inbuf::eval(){
-    ireg = ireg_n;
-    rvalid = rvalid_n;
-    
-    if(reset){
-        ireg_n = 0;
-        rvalid_n = false;
+    if(clk){
+        if(reset){
+            ireg = 0;
+            rvalid = false;
+        }
+        if(!cstop && rvalid){
+            ireg = 0;
+            rvalid = false;
+        } else if(cstop && !rvalid){
+            ireg = idata;
+            rvalid = true;
+        }
+        istop = rvalid;
+        cdata = istop ? ireg : idata;
+        cvalid = istop ? rvalid : ivalid;
     }
-    if(!cstop && rvalid){
-        ireg_n = 0;
-        rvalid_n = false;
-    } else if(cstop && !rvalid){
-        ireg_n = idata;
-        rvalid_n = true;
-    }
-
-    istop = rvalid;
-    cdata = istop ? ireg : idata;
-    cvalid = istop ? rvalid : ivalid;
 }
 
 void Inbuf::check_reset(int o){
@@ -70,14 +68,14 @@ bool flush(Inbuf& model, Vinbuf& dut, VerilatedVcdC& tr){
 bool test_flow(Inbuf& model, Vinbuf& dut, VerilatedVcdC& tr){
 
     //clk=1
-    dut.clk = 1;
-    model.clk = 1;
+    dut.clk = 0;
+    model.clk = 0;
     
     //reset=1
     dut.reset = 1;
     model.reset = 1;
     
-    for (int i=0; i<12; i++) {
+    for (int i=0; i<20; i++) {
         dut.reset = (i < 2);
         model.reset = (i < 2);
 
@@ -94,9 +92,11 @@ bool test_flow(Inbuf& model, Vinbuf& dut, VerilatedVcdC& tr){
                 dut.ivalid = 1;
                 model.ivalid = 1;
 
-                dut.idata = random();
-                model.idata = dut.idata;
-                cout << "idata: " << dut.idata << endl;
+                if(clk==0){
+                    dut.idata = random();
+                    model.idata = dut.idata;
+                    cout << "idata: " << dut.idata << endl;
+                }
             }
 
             if(i == 5){
@@ -116,7 +116,6 @@ bool test_flow(Inbuf& model, Vinbuf& dut, VerilatedVcdC& tr){
             if(i > 9){
                 dut.cstop = 0;
                 model.cstop = 0;
-
                 cout << "driving cstop=0" << endl;
             }
 
@@ -125,21 +124,26 @@ bool test_flow(Inbuf& model, Vinbuf& dut, VerilatedVcdC& tr){
             model.eval();
 
 
+            cout << "Checking dut==model" << endl;
+
+            if(dut.cdata != model.cdata || dut.cvalid != model.cvalid){
+                cout << "ERROR\tdut: " << dut.cdata << "," << bool(dut.cvalid) << "\tmodel: " << model.cdata << "," << model.cvalid << endl;
+            }
+            
             if(i>2){
                 cout << "Checking indata" << endl;
-                cout << "dut: " << dut.cdata << "," << bool(dut.cvalid) << "\tmodel: " << model.cdata << "," << model.cvalid << "-" << model.ireg << "," << model.rvalid << endl;
             }
+
             if(i==5){
                 cout << "Checking invalid" << endl;
-                cout << dut.cdata << " " << model.cdata << endl;
             }
+
             if(i==7){
                 cout << "Checking cstop" << endl;
-                cout << dut.cdata << " " << model.cdata << endl;
             }
+
             if(i>9){
                 cout << "Checking continue" << endl;
-                cout << dut.cdata << " " << model.cdata << endl;
             }
         }
         if (Verilated::gotFinish()){

@@ -22,7 +22,7 @@ int main(int argc, char **argv, char **env) {
     Inbuf model;
 
     cout << "Running initialization" << endl;
-    flush(model, dut, tr);
+    // flush(model, dut, tr);
     test_flow(model, dut, tr);
     tr.close();
 
