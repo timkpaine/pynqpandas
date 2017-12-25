@@ -36,5 +36,6 @@ public:
 };
 
 bool flush(Outbuf&, Voutbuf&, VerilatedVcdC&);
+bool test_flow(Outbuf&, Voutbuf&, VerilatedVcdC&);
 
 #endif

@@ -127,7 +127,7 @@ bool test_flow(Inbuf& model, Vinbuf& dut, VerilatedVcdC& tr){
             cout << "Checking dut==model" << endl;
 
             if(dut.cdata != model.cdata || dut.cvalid != model.cvalid){
-                cout << "ERROR\tdut: " << dut.cdata << "," << bool(dut.cvalid) << "\tmodel: " << model.cdata << "," << model.cvalid << endl;
+                cerr << "ERROR\tdut: " << dut.cdata << "," << bool(dut.cvalid) << "\tmodel: " << model.cdata << "," << model.cvalid << endl;
             }
             
             if(i>2){
