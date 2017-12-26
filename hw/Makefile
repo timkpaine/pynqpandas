@@ -80,7 +80,8 @@ scansion: ## View waveform with scansion
 %: $(ALL_SRC)  ## Make a submodule
 	$(VRL) $(VRL_FLAGS) --trace rtl/$@.sv --exe $(CPP_SRC) tb/src/$@.cpp tb/src/$@_tb.cpp
 	make -j -C obj_dir/ -f V$@.mk V$@
-	./obj_dir/V$@
+	./obj_dir/V$@ > $@.log
+	awk 'BEGIN{IGNORECASE=1} /fail| error/ { print }' $@.log
 
 # Thanks to Francoise at marmelab.com for this
 .DEFAULT_GOAL := help
