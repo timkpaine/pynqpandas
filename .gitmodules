@@ -1,3 +1,0 @@
-[submodule "PYNQ"]
-	path = PYNQ
-	url = git@github.com:timkpaine/PYNQ.git
