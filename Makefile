@@ -19,6 +19,9 @@ clean: ## clean the repository
 install:  ## install to site-packages
 	python3 setup.py install
 
+docs:  ## make docs
+	make -C ./docs html
+
 # Thanks to Francoise at marmelab.com for this
 .DEFAULT_GOAL := help
 help:
@@ -27,4 +30,4 @@ help:
 print-%:
 	@echo '$*=$($*)'
 
-.PHONY: clean run test help annotate annotate_l
+.PHONY: clean run test help annotate annotate_l docs
