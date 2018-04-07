@@ -15,6 +15,7 @@ clean: ## clean the repository
 	find . -name "__pycache__" | xargs  rm -rf 
 	find . -name "*.pyc" | xargs rm -rf 
 	rm -rf .coverage cover htmlcov logs build dist *.egg-info
+	make -C ./docs clean
 
 install:  ## install to site-packages
 	python3 setup.py install
