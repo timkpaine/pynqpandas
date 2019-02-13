@@ -1,6 +1,7 @@
 
 tests: ## Clean and Make unit tests
-	python3 -m nose2 -v tests --with-coverage --coverage=pynqpandas
+	python3 -m pytest tests --cov=pynqpandas
+
 
 test: lint ## run the tests for travis CI
 	# @ python3 -m nose2 -v tests --with-coverage --coverage=pynqpandas
