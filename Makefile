@@ -1,6 +1,6 @@
 
 tests: ## Clean and Make unit tests
-	python3 -m pytest tests --cov=pynqpandas
+	python3 -m pytest -v tests --cov=pynqpandas
 
 
 test: lint ## run the tests for travis CI
