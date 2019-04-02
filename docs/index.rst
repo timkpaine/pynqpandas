@@ -6,7 +6,7 @@
 pynqpandas
 ===================================
 
-|build-status| |waffle| |codecov| |gitter|
+|build-status| |codecov| |gitter|
 
 
 .. toctree::
@@ -24,11 +24,6 @@ Introduction
     :alt: Build Status
     :scale: 100%
     :target: https://travis-ci.org/timkpaine/pynqpandas
-
-.. |waffle| image:: https://badge.waffle.io/timkpaine/pynqpandas.svg?label=ready&title=Ready
-    :alt: Waffle
-    :scale: 100%
-    :target: http://waffle.io/timkpaine/pynqpandas
 
 .. |codecov| image:: https://codecov.io/gh/timkpaine/pynqpandas/branch/master/graph/badge.svg
     :alt: Codecov
