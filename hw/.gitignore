@@ -1,2 +1,6 @@
 *.vcd
 obj_dir
+tb_sim.wdb
+xelab.pb
+xsim.dir/
+xvlog.pb
