@@ -23,7 +23,13 @@ clean: ## clean the repository
 	make -C ./docs clean
 
 install:  ## install to site-packages
-	python3 setup.py install
+	pip3 install .
+
+dist:  ## dist to pypi
+	rm -rf dist build
+	python3 setup.py sdist
+	python3 setup.py bdist_wheel
+	twine check dist/* && twine upload dist/*
 
 docs:  ## make docs
 	make -C ./docs html
