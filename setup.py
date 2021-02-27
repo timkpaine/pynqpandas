@@ -18,7 +18,7 @@ setup(
     url='https://github.com/timkpaine/pynqpandas',
     download_url='https://github.com/timkpaine/pynqpandas/archive/v0.0.4.tar.gz',
     author='Tim Paine',
-    author_email='timothy.k.paine@gmail.com',
+    author_email='t.paine154@gmail.com',
     license='Apache 2.0',
     install_requires=requires,
     extras_require={'dev': requires + ['pytest', 'pytest-cov', 'pylint', 'flake8']},
